@@ -1,0 +1,43 @@
+{
+  "name": "@wowvendor/commitlint-config",
+  "version": "1.0.0",
+  "description": "Commitlint config enforcing conventional commits",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "release": "standard-version"
+  },
+  "author": "weyheyhey <iweyheyhey@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wowvendor/commitlint-config.git"
+  },
+  "keywords": [
+    "conventional-changelog",
+    "commitlint-config",
+    "commitlint"
+  ],
+  "devDependencies": {
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "standard-version": "^7.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{md, js, json}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
