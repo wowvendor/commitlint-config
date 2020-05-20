@@ -1,0 +1,51 @@
+name: push actions
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'chore:release')"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Prepare
+        run: npm ci
+      - name: ESlint
+        run: npm run test:lint
+  publish:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-publish')"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Prepare
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          npm ci
+      - name: Bump version
+        run: |
+          npm run release
+          git push --follow-tags origin master
+      - name: Publish-github
+        run: |
+          npm config set registry https://npm.pkg.github.com
+          npm publish
+      - name: Publish-npm
+        run: |
+          npm config set registry https://registry.npmjs.org
+          npm publish
