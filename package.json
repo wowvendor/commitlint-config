@@ -14,7 +14,7 @@
   "author": "weyheyhey <iweyheyhey@gmail.com>",
   "license": "MIT",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "access": "public"
   },
   "repository": {
     "type": "git",
