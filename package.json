@@ -1,6 +1,6 @@
 {
   "name": "@wowvendor/commitlint-config",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Commitlint config enforcing conventional commits",
   "main": "index.js",
   "files": [
