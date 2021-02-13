@@ -1,9 +1,7 @@
-name: push actions
+name: publish
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -14,14 +12,13 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Prepare
+      - name: Install Dependencies
         run: npm ci
-      - name: ESlint
-        run: npm run test:lint
+      - name: Test
+        run: npm run test
   publish:
     needs: tests
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-publish')"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -36,16 +33,17 @@ jobs:
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          npm ci
-      - name: Bump version
+      - name: Install Dependencies
+        run: npm ci
+      - name: Version Bump
         run: |
           npm run release
           git push --follow-tags origin master
-      - name: Publish-github
+      - name: Publish To GitHub
         run: |
           npm config set registry https://npm.pkg.github.com
           npm publish
-      - name: Publish-npm
+      - name: Publish To NPM
         run: |
           npm config set registry https://registry.npmjs.org
           npm publish

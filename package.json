@@ -7,7 +7,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "run-s test:*",
+    "test": "run-p test:*",
     "test:lint": "eslint .",
     "release": "standard-version",
     "postinstall": "husky install",
