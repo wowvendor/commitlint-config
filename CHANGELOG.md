@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/wowvendor/commitlint-config/compare/v1.0.6...v2.0.0) (2021-05-04)
+
+### ⚠ BREAKING CHANGES
+
+- new major version for @commitlint/config-conventional
+
+### Features
+
+- upgrade deps ([4342381](https://github.com/wowvendor/commitlint-config/commit/4342381065392a8b018023b86a83353c36514667))
+
 ### [1.0.6](https://github.com/wowvendor/commitlint-config/compare/v1.0.5...v1.0.6) (2021-02-13)
 
 ### [1.0.5](https://github.com/wowvendor/commitlint-config/compare/v1.0.4...v1.0.5) (2020-11-19)
