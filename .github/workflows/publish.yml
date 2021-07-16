@@ -28,7 +28,7 @@ jobs:
           node-version: 14
       - name: Prepare
         run: |
-          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GH_REGISTRY_TOKEN }}
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           git config --local user.email "action@github.com"
