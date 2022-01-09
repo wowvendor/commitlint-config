@@ -6,16 +6,25 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'chore(release)')"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: actions/cache@v2
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: node-modules-16-${{ hashFiles('package-lock.json') }}
       - name: Install Dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Test
-        run: npm run test
+      - name: Commitlint
+        uses: wagoid/commitlint-github-action@v4
+      - name: ESlint
+        run: npm run test:lint
   publish:
     needs: tests
     runs-on: ubuntu-latest
@@ -23,20 +32,27 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          token: ${{ secrets.GH_REGISTRY_TOKEN }}
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
+      - uses: actions/cache@v2
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: node-modules-16-${{ hashFiles('package-lock.json') }}
       - name: Prepare
         run: |
           npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GH_REGISTRY_TOKEN }}
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
       - name: Install Dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Version Bump
         run: |
+          npx --no-install husky install
           npm run release
           git push --follow-tags origin master
       - name: Publish To GitHub
